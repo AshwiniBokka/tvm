@@ -1,4 +1,4 @@
-# Licensed to the Apache Software Foundation (ASF) under one
+﻿# Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
 # regarding copyright ownership.  The ASF licenses this file
@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 # On MacOS, the default C compiler (/usr/bin/cc) is actually a small script that dispatches to a
 # compiler the default SDK (usually /Library/Developer/CommandLineTools/usr/bin/ or
 # /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/). CMake
@@ -24,8 +23,6 @@
 # because it can't find system libraries. Our solution is to detect if CMAKE_C_COMPILER lives in
 # /Library or /Applications and switch to the default compiler instead.
 include(ExternalProject)
-
-
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin" AND (CMAKE_C_COMPILER MATCHES "^/Library"
   OR CMAKE_C_COMPILER MATCHES "^/Applications"))
     set(c_compiler "/usr/bin/cc")
@@ -35,10 +32,10 @@ endif()
 
 ExternalProject_Add(project_libbacktrace
   PREFIX libbacktrace
-  SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../../3rdparty/libbacktrace
-  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/libbacktrace
+  SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../../3rdparty/libbacktrace"
+  BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/libbacktrace"
   CONFIGURE_COMMAND "${CMAKE_CURRENT_LIST_DIR}/../../3rdparty/libbacktrace/configure"
-                    "--prefix=${CMAKE_CURRENT_BINARY_DIR}/libbacktrace"
+                    "--prefix=\"${CMAKE_CURRENT_BINARY_DIR}/libbacktrace\""
                     --with-pic
                     "CC=${c_compiler}"
                     "CFLAGS=${CMAKE_C_FLAGS}"
@@ -53,7 +50,6 @@ ExternalProject_Add(project_libbacktrace
   BUILD_BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/libbacktrace/lib/libbacktrace.a"
                    "${CMAKE_CURRENT_BINARY_DIR}/libbacktrace/include/backtrace.h"
   )
-
 # Custom step to rebuild libbacktrace if any of the source files change
 tvm_file_glob(GLOB LIBBACKTRACE_SRCS "${CMAKE_CURRENT_LIST_DIR}/../../3rdparty/libbacktrace/*.c")
 ExternalProject_Add_Step(project_libbacktrace checkout
@@ -63,4 +59,4 @@ ExternalProject_Add_Step(project_libbacktrace checkout
 )
 
 # create include directory so cmake doesn't complain
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/libbacktrace/include)
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/libbacktrace/include")
